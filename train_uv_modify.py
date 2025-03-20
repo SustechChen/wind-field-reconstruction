@@ -150,26 +150,6 @@ for epoch in range(epochs):
                 # loss_save.to_csv(filename_loss, index=False, header=False)
                 # del loss_save
     scheduler.step()
-    if (epoch + 1) % 10 == 0:
-        time_steps = 25
-        time_lists = np.linspace(0, 199.5, time_steps)
-        total_error_mse_u = np.zeros(time_steps)
-        total_error_mse_v = np.zeros(time_steps)
-        total_error_mse_w = np.zeros(time_steps)
-        total_error_mse_v_r = np.zeros(time_steps)
-        Eu = np.zeros(time_steps)
-        Ev = np.zeros(time_steps)
-        Ew = np.zeros(time_steps)
-        Evr = np.zeros(time_steps)
-        for t in range(len(time_lists)):
-            total_error_mse_u[t], total_error_mse_v[t], total_error_mse_w[t], total_error_mse_v_r[t], Eu[t], Ev[t], \
-            Ew[t], Evr[t] = pinn_net.validation_error_plane(time_lists[t], x_mean, y_mean, z_mean,
-                                                            feature_mat_numpy)
-        writer.add_scalars('Validation_loss', {'total_error_mse_u': total_error_mse_u.mean() / Eu.mean(),
-                                               'total_error_mse_v': total_error_mse_v.mean() / Ev.mean(),
-                                               'total_error_mse_w': total_error_mse_w.mean() / Ew.mean(),
-                                               'total_error_mse_v_r': total_error_mse_v_r.mean() / Evr.mean()
-                                               }, epoch)
     if (epoch + 1) == epochs / 4 or (epoch + 1) == epochs / 2:
         torch.save(pinn_net.state_dict(), './3DNS_model_train' + "epochs_{:.0f}".format((epoch + 1)) + '.pt')
         print(epoch + 1)
